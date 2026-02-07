@@ -1,4 +1,4 @@
-# Professional Team Portfolio with Firebase CMS
+# Professional Team Portfolio
 
 A modern, minimalist team portfolio website built with Next.js and Django, featuring a full-featured admin CMS for content management.
 
@@ -140,22 +140,7 @@ Or connect your Git repository to Vercel for automatic deployments.
 
 ### Features
 - Extend TypeScript interfaces in `lib/types.ts`
-- Add new Firestore collections with CRUD operations
 - Create new admin tabs in `components/admin/`
 
-## Security
-
-- Admin routes protected by Firebase Authentication
-- Middleware enforces authentication checks
-- Session management with HTTP-only cookies
-- All Firebase operations use proper security rules
-
-## Support
-
-For issues or questions, refer to:
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Firebase Documentation](https://firebase.google.com/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-```
 
 ```json file="" isHidden
