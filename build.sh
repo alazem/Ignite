@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Exit on error
+# exit on error
 set -o errexit
 
-# Install dependencies
-pip install -r backend/requirements.txt
+# If we are running from the root (as Render does), go to the backend directory
+if [ -d "backend" ]; then
+  cd backend
+fi
 
-# Collect static files
-python backend/manage.py collectstatic --no-input
+pip install -r requirements.txt
 
-# Apply database migrations
-python backend/manage.py migrate
+python manage.py collectstatic --noinput
+python manage.py migrate
