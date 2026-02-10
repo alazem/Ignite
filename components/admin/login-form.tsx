@@ -10,8 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, Eye, EyeOff } from "lucide-react"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api"
-
 export function LoginForm() {
   const router = useRouter()
   const [username, setUsername] = useState("")
@@ -26,7 +24,10 @@ export function LoginForm() {
     setError("")
 
     try {
-      const res = await fetch(`${API_URL}/token/`, {
+      // Ensure we hit the /api/token/ endpoint
+      // If NEXT_PUBLIC_API_URL is "https://site.com", this becomes "https://site.com/api/token/"
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+      const res = await fetch(`${baseUrl}/api/token/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
