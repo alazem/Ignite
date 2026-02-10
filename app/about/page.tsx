@@ -1,13 +1,36 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Image from "next/image"
-import { getContentSection } from "@/lib/api-server"
+import type { ContentSection } from "@/lib/types"
 
-export const metadata = {
-  title: "About - Ignite Technology",
-  description: "Learn about our team and mission",
-}
+export default function AboutPage() {
+  const [aboutContent, setAboutContent] = useState<ContentSection | null>(null)
+  const [loading, setLoading] = useState(true)
 
-export default async function AboutPage() {
-  const aboutContent = await getContentSection("about")
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+        const res = await fetch(`${API_URL}/api/content/?section=about`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data) && data.length > 0) {
+            setAboutContent(data[0])
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching about content:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
 
   return (
     <div className="min-h-screen">

@@ -1,17 +1,46 @@
-export const revalidate = 120
+"use client"
+
+import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { getContentSection, getContactInfo } from "@/lib/api-server"
 import { Mail, Phone, MapPin } from "lucide-react"
+import type { ContentSection, ContactInfo } from "@/lib/types"
 
-export const metadata = {
-  title: "Contact - Studio",
-  description: "Get in touch with our team",
-}
+export default function ContactPage() {
+  const [contactContent, setContactContent] = useState<ContentSection | null>(null)
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+  const [loading, setLoading] = useState(true)
 
-export default async function ContactPage() {
-  console.log("[v0] Fetching contact info...")
-  const [contactContent, contactInfo] = await Promise.all([getContentSection("contact"), getContactInfo()])
-  console.log("[v0] Contact info available:", !!contactInfo)
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+        const [contentRes, infoRes] = await Promise.all([
+          fetch(`${API_URL}/api/content/?section=contact`),
+          fetch(`${API_URL}/api/contact-info/`),
+        ])
+
+        if (contentRes.ok) {
+          const data = await contentRes.json()
+          if (Array.isArray(data) && data.length > 0) setContactContent(data[0])
+        }
+        if (infoRes.ok) {
+          const data = await infoRes.json()
+          // API might return array or object depending on implementation, 
+          // but lib/api-server.ts logic suggests it returns an array for contact-info/ and takes the first one.
+          // Let's check api-server.ts logic again. 
+          // "if (Array.isArray(data) && data.length > 0) return mapContact(data[0])"
+          // So we should handle array.
+          if (Array.isArray(data) && data.length > 0) setContactInfo(data[0])
+        }
+
+      } catch (error) {
+        console.error("Error fetching contact data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const displayContactInfo = contactInfo || {
     id: "1",
@@ -25,6 +54,10 @@ export default async function ContactPage() {
       github: "https://github.com/yourteam",
     },
     updatedAt: new Date(),
+  }
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (

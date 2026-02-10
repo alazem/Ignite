@@ -1,19 +1,35 @@
-export const revalidate = 60
+"use client"
+
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { getProjects } from "@/lib/api-server"
 import { ExternalLink } from "lucide-react"
+import type { Project } from "@/lib/types"
 
-export const metadata = {
-  title: "Our Work - Studio",
-  description: "Explore our portfolio of design and development projects",
-}
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
-export default async function ProjectsPage() {
-  console.log("[v0] Fetching projects...")
-  const projects = await getProjects()
-  console.log("[v0] Projects count:", projects.length)
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+        const res = await fetch(`${API_URL}/api/projects/`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data)) {
+            setProjects(data)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const displayProjects =
     projects.length > 0
@@ -68,6 +84,10 @@ export default async function ProjectsPage() {
           updatedAt: new Date(),
         },
       ]
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
 
   return (
     <div className="min-h-screen">

@@ -1,12 +1,9 @@
-export const revalidate = 120
-import { Card, CardContent } from "@/components/ui/card"
-import { getServices } from "@/lib/api-server"
-import { Palette, Code, Layout, Target } from "lucide-react"
+"use client"
 
-export const metadata = {
-  title: "Services - Ignite Technology",
-  description: "Our design and development services",
-}
+import { useEffect, useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Palette, Code, Layout, Target } from "lucide-react"
+import type { Service } from "@/lib/types"
 
 const iconMap: Record<string, any> = {
   palette: Palette,
@@ -15,10 +12,29 @@ const iconMap: Record<string, any> = {
   target: Target,
 }
 
-export default async function ServicesPage() {
-  console.log("[v0] Fetching services...")
-  const services = await getServices()
-  console.log("[v0] Services count:", services.length)
+export default function ServicesPage() {
+  const [services, setServices] = useState<Service[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+        const res = await fetch(`${API_URL}/api/services/`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data)) {
+            setServices(data)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching services:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const displayServices =
     services.length > 0
@@ -65,6 +81,10 @@ export default async function ServicesPage() {
           updatedAt: new Date(),
         },
       ]
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
 
   return (
     <div className="min-h-screen">

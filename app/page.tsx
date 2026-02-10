@@ -1,42 +1,60 @@
-export const revalidate = 60
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
-import { getContentSection, getHomeStats, getFeaturedTestimonials, getFeaturedProjects } from "@/lib/api-server"
 
 import type { Project, Testimonial, HomeStats, ContentSection } from "@/lib/types"
 
-export default async function HomePage() {
-  console.log("[v0] Fetching homepage data from API Server...")
-  let heroContent: ContentSection | null = null
-  let missionContent: ContentSection | null = null
-  let stats: HomeStats[] = []
-  let testimonials: Testimonial[] = []
-  let projects: Project[] = []
+export default function HomePage() {
+  const [heroContent, setHeroContent] = useState<ContentSection | null>(null)
+  const [missionContent, setMissionContent] = useState<ContentSection | null>(null)
+  const [stats, setStats] = useState<HomeStats[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
-  try {
-    const results = await Promise.all([
-      getContentSection("hero"),
-      getContentSection("mission"),
-      getHomeStats(),
-      getFeaturedTestimonials(),
-      getFeaturedProjects(3),
-    ])
-    heroContent = results[0]
-    missionContent = results[1]
-    stats = results[2]
-    testimonials = results[3]
-    projects = results[4]
-  } catch (error) {
-    console.error("[v0] Error fetching homepage data:", error)
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+
+        const [heroRes, missionRes, statsRes, testimonialsRes, projectsRes] = await Promise.all([
+          fetch(`${API_URL}/api/content/?section=hero`),
+          fetch(`${API_URL}/api/content/?section=mission`),
+          fetch(`${API_URL}/api/home-stats/`),
+          fetch(`${API_URL}/api/testimonials/?featured=true`),
+          fetch(`${API_URL}/api/projects/?featured=true&limit=3`),
+        ])
+
+        if (heroRes.ok) {
+          const data = await heroRes.json()
+          if (Array.isArray(data) && data.length > 0) setHeroContent(data[0])
+        }
+        if (missionRes.ok) {
+          const data = await missionRes.json()
+          if (Array.isArray(data) && data.length > 0) setMissionContent(data[0])
+        }
+        if (statsRes.ok) setStats(await statsRes.json())
+        if (testimonialsRes.ok) setTestimonials(await testimonialsRes.json())
+        if (projectsRes.ok) setProjects(await projectsRes.json())
+
+      } catch (error) {
+        console.error("Error fetching homepage data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
-
-  console.log("[v0] Hero content:", heroContent)
-  console.log("[v0] Stats count:", stats.length)
-  console.log("[v0] Testimonials count:", testimonials.length)
-  console.log("[v0] Projects count:", projects.length)
 
   const featuredProjects = projects
 
@@ -81,6 +99,8 @@ export default async function HomePage() {
                 </div>
               ))
             ) : (
+              // Create a default stats array to map over to avoid code duplication if desired, or keep as is.
+              // Keeping existing fallback UI structure for minimal layout change.
               <>
                 <div className="text-center">
                   <div className="text-4xl sm:text-5xl font-bold mb-2">150+</div>
@@ -304,3 +324,4 @@ export default async function HomePage() {
     </div>
   )
 }
+
