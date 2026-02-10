@@ -1,9 +1,30 @@
-import Link from "next/link"
-import { getContactInfo } from "@/lib/api-server"
-import { Linkedin, Github } from "lucide-react"
+"use client"
 
-export async function Footer() {
-  const contact = await getContactInfo()
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Linkedin, Github } from "lucide-react"
+import type { ContactInfo } from "@/lib/types"
+
+export function Footer() {
+  const [contact, setContact] = useState<ContactInfo | null>(null)
+
+  useEffect(() => {
+    async function fetchContact() {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+        const res = await fetch(`${API_URL}/api/contact-info/`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data) && data.length > 0) {
+            setContact(data[0])
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching contact info for footer:", error)
+      }
+    }
+    fetchContact()
+  }, [])
 
   return (
     <footer className="border-t border-border bg-muted/30">
