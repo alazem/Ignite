@@ -150,6 +150,7 @@ STORAGES = {
 # Legacy settings for compatibility with third-party apps
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 
