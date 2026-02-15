@@ -13,6 +13,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_imageUrl(self, obj):
         if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return obj.image_url_fallback or ""
 
@@ -27,6 +30,9 @@ class TestimonialSerializer(serializers.ModelSerializer):
 
     def get_imageUrl(self, obj):
         if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return ""
 
@@ -55,6 +61,9 @@ class ContentSectionSerializer(serializers.ModelSerializer):
 
     def get_imageUrl(self, obj):
         if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return ""
 
