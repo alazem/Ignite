@@ -2,7 +2,8 @@
 
 import type { Project, Testimonial, Service, HomeStats, ContentSection, ContactInfo } from "./types"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api"
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+const API_URL = BASE_URL.endsWith("/api") ? BASE_URL : `${BASE_URL.replace(/\/$/, "")}/api`
 
 function getCookie(name: string) {
   const value = `; ${document.cookie}`
@@ -23,15 +24,25 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     headers["Content-Type"] = "application/json"
   }
 
-  const res = await fetch(`${API_URL}/${endpoint}`, {
+  const url = `${API_URL}/${endpoint.startsWith("/") ? endpoint.slice(1) : endpoint}`
+  console.log(`[api-client] Fetching: ${url}`, { method: options.method || "GET" })
+
+  const res = await fetch(url, {
     ...options,
     headers,
   })
 
   if (!res.ok) {
     const errorText = await res.text()
-    console.error(`API Error ${res.status} on ${endpoint}: ${errorText}`)
-    throw new Error(`API Error: ${res.statusText}`)
+    let errorMessage = `API Error: ${res.status} ${res.statusText}`
+    try {
+      const errorJson = JSON.parse(errorText)
+      errorMessage = errorJson.detail || errorJson.error || JSON.stringify(errorJson) || errorMessage
+    } catch (e) {
+      errorMessage = errorText || errorMessage
+    }
+    console.error(`[api-client] ${errorMessage}`, { url, status: res.status })
+    throw new Error(errorMessage)
   }
 
   // Handle 204 No Content

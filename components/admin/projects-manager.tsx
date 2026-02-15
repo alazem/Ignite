@@ -66,10 +66,23 @@ export function ProjectsManager() {
       const data = new FormData()
       data.append("title", formData.title)
       data.append("description", formData.description)
-      data.append("tags", JSON.stringify(formData.tags.split(",").map((t) => t.trim())))
+
+      // Ensure tags is a valid JSON array string
+      const tagsArray = formData.tags.split(",").map((t) => t.trim()).filter(t => t !== "")
+      data.append("tags", JSON.stringify(tagsArray))
+
       data.append("link", formData.link || "")
       data.append("featured", String(formData.featured))
       data.append("order", String(formData.order))
+
+      console.log("[projects-manager] Submitting data:", {
+        title: formData.title,
+        tags: tagsArray,
+        featured: formData.featured,
+        hasImage: !!imageFile,
+        hasFallback: !!formData.imageUrl
+      })
+
       // If we have an image file, use it. Otherwise, use the fallback URL if provided.
       if (imageFile) {
         data.append("image", imageFile)
@@ -78,22 +91,21 @@ export function ProjectsManager() {
       }
 
       if (editingId) {
-        console.log("Updating project:", editingId)
+        console.log("[projects-manager] Updating project:", editingId)
         await updateProject(editingId, data)
       } else {
-        console.log("Creating new project")
+        console.log("[projects-manager] Creating new project")
         await createProject(data)
       }
-      console.log("Project saved to Firestore")
 
       resetForm()
       loadProjects()
       await revalidateContent()
       router.refresh()
       setSuccess(editingId ? "Project updated" : "Project added")
-    } catch (error) {
-      console.error("[v0] Error saving project:", error)
-      setError("Error saving project. Please try again.")
+    } catch (err: any) {
+      console.error("[projects-manager] Error saving project:", err)
+      setError(err.message || "Error saving project. Please try again.")
     }
     finally {
       setSaving(false)
