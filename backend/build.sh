@@ -9,6 +9,9 @@ fi
 
 pip install -r requirements.txt
 
+# Clean static files to prevent corruption
+rm -rf staticfiles/
+
 python manage.py collectstatic --noinput
 python manage.py migrate
 
