@@ -110,8 +110,9 @@ export async function deleteProject(id: string) {
 }
 
 // Testimonials CRUD
-export async function getTestimonials(): Promise<Testimonial[]> {
-  const data = await fetchAPI("testimonials/")
+export async function getTestimonials(featured?: boolean): Promise<Testimonial[]> {
+  const query = featured ? "?featured=true" : ""
+  const data = await fetchAPI(`testimonials/${query}`)
   return data ? data.map(mapTestimonial) : []
 }
 
@@ -210,6 +211,11 @@ export async function createContentSection(data: Omit<ContentSection, "id" | "up
 }
 
 // Contact Info CRUD
+export async function getContactInfo(): Promise<ContactInfo | null> {
+  const data = await fetchAPI("contact-info/")
+  return Array.isArray(data) && data.length > 0 ? data[0] : null
+}
+
 export async function updateContactInfo(id: string, data: Partial<ContactInfo>) {
   return await fetchAPI(`contact-info/${id}/`, {
     method: "PATCH",

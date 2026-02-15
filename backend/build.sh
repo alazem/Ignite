@@ -16,3 +16,6 @@ python manage.py migrate
 if [ "$DJANGO_SUPERUSER_USERNAME" ]; then
   python manage.py createsuperuser --noinput || true
 fi
+
+# Seed initial data (safe to run multiple times)
+python seed_data.py

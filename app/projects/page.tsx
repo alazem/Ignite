@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink } from "lucide-react"
+import { getProjects } from "@/lib/api-client"
 import type { Project } from "@/lib/types"
 
 export default function ProjectsPage() {
@@ -14,14 +15,8 @@ export default function ProjectsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-        const res = await fetch(`${API_URL}/api/projects/`)
-        if (res.ok) {
-          const data = await res.json()
-          if (Array.isArray(data)) {
-            setProjects(data)
-          }
-        }
+        const data = await getProjects()
+        setProjects(data)
       } catch (error) {
         console.error("Error fetching projects:", error)
       } finally {

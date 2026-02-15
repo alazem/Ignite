@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
 
+import { getProjects, getHomeStats, getTestimonials, getAllContentSections } from "@/lib/api-client"
 import type { Project, Testimonial, HomeStats, ContentSection } from "@/lib/types"
 
 export default function HomePage() {
@@ -20,27 +21,20 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-
-        const [heroRes, missionRes, statsRes, testimonialsRes, projectsRes] = await Promise.all([
-          fetch(`${API_URL}/api/content/?section=hero`),
-          fetch(`${API_URL}/api/content/?section=mission`),
-          fetch(`${API_URL}/api/home-stats/`),
-          fetch(`${API_URL}/api/testimonials/?featured=true`),
-          fetch(`${API_URL}/api/projects/?featured=true&limit=3`),
+        const [contentData, statsData, testimonialsData, projectsData] = await Promise.all([
+          getAllContentSections(),
+          getHomeStats(),
+          getTestimonials(true),
+          getProjects()
         ])
 
-        if (heroRes.ok) {
-          const data = await heroRes.json()
-          if (Array.isArray(data) && data.length > 0) setHeroContent(data[0])
+        if (contentData) {
+          setHeroContent(contentData.find(s => s.section === 'hero') || null)
+          setMissionContent(contentData.find(s => s.section === 'mission') || null)
         }
-        if (missionRes.ok) {
-          const data = await missionRes.json()
-          if (Array.isArray(data) && data.length > 0) setMissionContent(data[0])
-        }
-        if (statsRes.ok) setStats(await statsRes.json())
-        if (testimonialsRes.ok) setTestimonials(await testimonialsRes.json())
-        if (projectsRes.ok) setProjects(await projectsRes.json())
+        setStats(statsData)
+        setTestimonials(testimonialsData)
+        setProjects(projectsData.filter(p => p.featured).slice(0, 3))
 
       } catch (error) {
         console.error("Error fetching homepage data:", error)
@@ -99,8 +93,6 @@ export default function HomePage() {
                 </div>
               ))
             ) : (
-              // Create a default stats array to map over to avoid code duplication if desired, or keep as is.
-              // Keeping existing fallback UI structure for minimal layout change.
               <>
                 <div className="text-center">
                   <div className="text-4xl sm:text-5xl font-bold mb-2">150+</div>
@@ -324,4 +316,3 @@ export default function HomePage() {
     </div>
   )
 }
-
