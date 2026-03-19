@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: alazem/ignite
+  repo: alazem/Ignite
   branch: main
   base_url: https://ignitetechnologies.vercel.app
   auth_endpoint: api/auth

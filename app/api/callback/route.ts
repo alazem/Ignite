@@ -11,6 +11,10 @@ export async function GET(request: Request) {
   const clientId = process.env.GITHUB_CLIENT_ID
   const clientSecret = process.env.GITHUB_CLIENT_SECRET
 
+  if (!clientId || !clientSecret) {
+    return NextResponse.json({ error: "OAuth credentials not configured" }, { status: 500 })
+  }
+
   try {
     // Exchange code for access token
     const response = await fetch("https://github.com/login/oauth/access_token", {
@@ -29,35 +33,36 @@ export async function GET(request: Request) {
     const data = await response.json()
 
     if (data.error) {
+      console.error("GitHub OAuth error:", data)
       return NextResponse.json({ error: data.error_description || data.error }, { status: 401 })
     }
 
-    // Decap CMS uses simple-oauth2 pattern and expects a postMessage back to the window.opener
-    const content = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Authorizing...</title>
-      </head>
-      <body>
-        <script>
-          (function() {
-            function receiveMessage(e) {
-              console.log("receiveMessage %o", e);
-              // Send the results back to the CMS!
-              window.opener.postMessage(
-                'authorization:github:success:${JSON.stringify(data)}',
-                e.origin
-              );
-            }
-            window.addEventListener("message", receiveMessage, false);
-            // Tell the CMS we are ready to send the token
-            window.opener.postMessage("authorizing:github", "*");
-          })()
-        </script>
-      </body>
-      </html>
-    `
+    const token = data.access_token
+    const provider = "github"
+
+    // Decap CMS expects this exact postMessage format
+    const content = `<!DOCTYPE html>
+<html>
+<head><title>Authorizing...</title></head>
+<body>
+<script>
+(function() {
+  var token = "${token}";
+  var provider = "${provider}";
+
+  function receiveMessage(e) {
+    window.opener.postMessage(
+      "authorization:" + provider + ":success:" + JSON.stringify({ token: token, provider: provider }),
+      e.origin
+    );
+  }
+
+  window.addEventListener("message", receiveMessage, false);
+  window.opener.postMessage("authorizing:" + provider, "*");
+})();
+</script>
+</body>
+</html>`
 
     return new NextResponse(content, {
       headers: { "Content-Type": "text/html" },
