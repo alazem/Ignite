@@ -1,49 +1,12 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin } from "lucide-react"
-import type { ContentSection, ContactInfo } from "@/lib/types"
+import { getContentSection, getContactInfo } from "@/lib/content"
 
 export default function ContactPage() {
-  const [contactContent, setContactContent] = useState<ContentSection | null>(null)
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-        const [contentRes, infoRes] = await Promise.all([
-          fetch(`${API_URL}/api/content/?section=contact`),
-          fetch(`${API_URL}/api/contact-info/`),
-        ])
-
-        if (contentRes.ok) {
-          const data = await contentRes.json()
-          if (Array.isArray(data) && data.length > 0) setContactContent(data[0])
-        }
-        if (infoRes.ok) {
-          const data = await infoRes.json()
-          // API might return array or object depending on implementation, 
-          // but lib/api-server.ts logic suggests it returns an array for contact-info/ and takes the first one.
-          // Let's check api-server.ts logic again. 
-          // "if (Array.isArray(data) && data.length > 0) return mapContact(data[0])"
-          // So we should handle array.
-          if (Array.isArray(data) && data.length > 0) setContactInfo(data[0])
-        }
-
-      } catch (error) {
-        console.error("Error fetching contact data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [])
+  const contactContent = getContentSection("contact")
+  const contactInfo = getContactInfo()
 
   const displayContactInfo = contactInfo || {
-    id: "1",
     email: "ignitetechnologies3@gmail.com",
     phone: "+251913086343/+251933791003",
     address: "Addis Ababa, Ethiopia",
@@ -53,11 +16,6 @@ export default function ContactPage() {
       instagram: "https://instagram.com/_alazar_z",
       github: "https://github.com/yourteam",
     },
-    updatedAt: new Date(),
-  }
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (
@@ -125,7 +83,7 @@ export default function ContactPage() {
             <CardContent className="p-8 text-center">
               <h2 className="text-2xl font-semibold mb-4">Start a Conversation</h2>
               <p className="text-muted-foreground mb-6 text-pretty">
-                Reach out via email or phone, and we'll get back to you as soon as possible to discuss your project.
+                Reach out via email or phone, and we&apos;ll get back to you as soon as possible to discuss your project.
               </p>
               <a
                 href={`mailto:${displayContactInfo.email}`}

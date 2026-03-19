@@ -1,88 +1,11 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink } from "lucide-react"
-import { getProjects } from "@/lib/api-client"
-import type { Project } from "@/lib/types"
+import { getProjects } from "@/lib/content"
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getProjects()
-        setProjects(data)
-      } catch (error) {
-        console.error("Error fetching projects:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [])
-
-  const displayProjects =
-    projects.length > 0
-      ? projects
-      : [
-        {
-          id: "1",
-          title: "E-Commerce Platform Redesign",
-          description:
-            "Complete redesign and development of a modern e-commerce platform with advanced filtering and seamless checkout experience.",
-          imageUrl: "/.jpg?key=ecommerce&height=600&width=800&query=modern ecommerce platform",
-          tags: ["Design", "Development", "E-Commerce"],
-          link: "https://example.com",
-          featured: true,
-          order: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "2",
-          title: "Corporate Brand Identity",
-          description:
-            "Comprehensive brand identity system including logo, guidelines, and marketing materials for a fintech startup.",
-          imageUrl: "/.jpg?key=brand&height=600&width=800&query=corporate brand identity",
-          tags: ["Branding", "Design"],
-          featured: true,
-          order: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "3",
-          title: "Mobile App Development",
-          description:
-            "Native iOS and Android app for fitness tracking with real-time analytics and social features.",
-          imageUrl: "/.jpg?key=mobile&height=600&width=800&query=mobile app interface",
-          tags: ["Mobile", "Development", "UX/UI"],
-          featured: false,
-          order: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "4",
-          title: "SaaS Dashboard Design",
-          description: "Intuitive dashboard interface for a B2B analytics platform with complex data visualization.",
-          imageUrl: "/.jpg?key=saas&height=600&width=800&query=saas dashboard interface",
-          tags: ["Design", "SaaS", "Data Visualization"],
-          featured: true,
-          order: 4,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
-  }
+  const projects = getProjects()
 
   return (
     <div className="min-h-screen">
@@ -101,14 +24,14 @@ export default function ProjectsPage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {displayProjects.map((project, index) => (
+            {projects.map((project, index) => (
               <Card
-                key={project.id}
+                key={project.slug || index}
                 className="group overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500"
               >
                 <div className="aspect-[16/10] relative overflow-hidden bg-muted">
                   <Image
-                    src={project.imageUrl || "/placeholder.svg"}
+                    src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"

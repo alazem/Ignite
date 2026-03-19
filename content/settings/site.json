@@ -1,0 +1,19 @@
+{
+  "stats": [
+    { "label": "Projects Completed", "value": "150+", "order": 1 },
+    { "label": "Happy Clients", "value": "80+", "order": 2 },
+    { "label": "Years Experience", "value": "12", "order": 3 },
+    { "label": "Team Members", "value": "25", "order": 4 }
+  ],
+  "contact": {
+    "email": "ignitetechnologies3@gmail.com",
+    "phone": "+251913086343/+251933791003",
+    "address": "Addis Ababa, Ethiopia",
+    "socialLinks": {
+      "linkedin": "https://www.linkedin.com/in/alazar-zemene-919aa82b5/",
+      "twitter": "https://twitter.com/yourteam",
+      "instagram": "https://instagram.com/_alazar_z",
+      "github": "https://github.com/yourteam"
+    }
+  }
+}

@@ -1,25 +1,19 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Linkedin, Github } from "lucide-react"
-import { getContactInfo } from "@/lib/api-client"
-import type { ContactInfo } from "@/lib/types"
+import { getContactInfo } from "@/lib/content"
 
 export function Footer() {
-  const [contact, setContact] = useState<ContactInfo | null>(null)
+  const contact = getContactInfo()
 
-  useEffect(() => {
-    async function fetchContact() {
-      try {
-        const data = await getContactInfo()
-        setContact(data)
-      } catch (error) {
-        console.error("Error fetching contact info for footer:", error)
-      }
-    }
-    fetchContact()
-  }, [])
+  const displayContact = contact || {
+    email: "ignitetechnologies3@gmail.com",
+    phone: "+251913086343/+251933791003",
+    address: "Addis Ababa, Ethiopia",
+    socialLinks: {
+      linkedin: "https://www.linkedin.com/in/alazar-zemene-919aa82b5/",
+      github: "https://github.com/yourteam",
+    },
+  }
 
   return (
     <footer className="border-t border-border bg-muted/30">
@@ -69,44 +63,39 @@ export function Footer() {
           {/* Contact & Social */}
           <div>
             <h4 className="text-sm font-semibold mb-4">Get in Touch</h4>
-            {contact && (
-              <div className="space-y-2 mb-4">
+            <div className="space-y-2 mb-4">
+              <a
+                href={`mailto:${displayContact.email}`}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors block w-fit"
+              >
+                {displayContact.email}
+              </a>
+              <p className="text-sm text-muted-foreground">{displayContact.phone}</p>
+            </div>
+            <div className="flex gap-4">
+              {displayContact.socialLinks?.linkedin && (
                 <a
-                  href={`mailto:${contact.email}`}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors block w-fit"
+                  href={displayContact.socialLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="LinkedIn"
                 >
-                  {contact.email}
+                  <Linkedin size={20} />
                 </a>
-                <p className="text-sm text-muted-foreground">{contact.phone}</p>
-              </div>
-            )}
-            {contact?.socialLinks && (
-              <div className="flex gap-4">
-                {contact.socialLinks.linkedin && (
-                  <a
-                    href={contact.socialLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin size={20} />
-                  </a>
-                )}
-
-                {contact.socialLinks.github && (
-                  <a
-                    href={contact.socialLinks.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="GitHub"
-                  >
-                    <Github size={20} />
-                  </a>
-                )}
-              </div>
-            )}
+              )}
+              {displayContact.socialLinks?.github && (
+                <a
+                  href={displayContact.socialLinks.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github size={20} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
 

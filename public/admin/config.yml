@@ -1,0 +1,96 @@
+backend:
+  name: github
+  repo: alazem/Ignite
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  # ── Projects ──────────────────────────────────────────────────────────────
+  - name: "projects"
+    label: "Projects"
+    folder: "content/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Tags", name: "tags", widget: "list", default: [] }
+      - { label: "Link", name: "link", widget: "string", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Order", name: "order", widget: "number", default: 0, value_type: "int" }
+      - { label: "Date", name: "date", widget: "datetime", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  # ── Testimonials ──────────────────────────────────────────────────────────
+  - name: "testimonials"
+    label: "Testimonials"
+    folder: "content/testimonials"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Role", name: "role", widget: "string" }
+      - { label: "Company", name: "company", widget: "string" }
+      - { label: "Content", name: "content", widget: "text" }
+      - { label: "Rating", name: "rating", widget: "number", default: 5, value_type: "int", min: 1, max: 5 }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Order", name: "order", widget: "number", default: 0, value_type: "int" }
+
+  # ── Services ──────────────────────────────────────────────────────────────
+  - name: "services"
+    label: "Services"
+    folder: "content/services"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: ["palette", "code", "layout", "target"], default: "target" }
+      - { label: "Order", name: "order", widget: "number", default: 0, value_type: "int" }
+
+  # ── Page Sections ─────────────────────────────────────────────────────────
+  - name: "pages"
+    label: "Page Sections"
+    folder: "content/pages"
+    create: false
+    slug: "{{slug}}"
+    fields:
+      - { label: "Section", name: "section", widget: "select", options: ["hero", "about", "mission", "contact"] }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Subtitle", name: "subtitle", widget: "string", required: false }
+      - { label: "Content", name: "content", widget: "text" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+
+  # ── Site Settings ─────────────────────────────────────────────────────────
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "Site Configuration"
+        name: "site"
+        file: "content/settings/site.json"
+        fields:
+          - label: "Stats"
+            name: "stats"
+            widget: "list"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+              - { label: "Order", name: "order", widget: "number", default: 0, value_type: "int" }
+          - label: "Contact"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Email", name: "email", widget: "string" }
+              - { label: "Phone", name: "phone", widget: "string" }
+              - { label: "Address", name: "address", widget: "text" }
+              - label: "Social Links"
+                name: "socialLinks"
+                widget: "object"
+                fields:
+                  - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
+                  - { label: "Twitter", name: "twitter", widget: "string", required: false }
+                  - { label: "Instagram", name: "instagram", widget: "string", required: false }
+                  - { label: "GitHub", name: "github", widget: "string", required: false }
