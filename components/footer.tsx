@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Linkedin, Github } from "lucide-react"
 import { getContactInfo } from "@/lib/content"
+import { ClickToCall } from "@/components/click-to-call"
 
 export function Footer() {
   const contact = getContactInfo()
@@ -19,7 +20,6 @@ export function Footer() {
     <footer className="border-t border-border bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Brand */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Ignite Technology</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -27,40 +27,16 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Links */}
           <div>
             <h4 className="text-sm font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/projects"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Work
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Contact
-                </Link>
-              </li>
+              <li><Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Work</Link></li>
+              <li><Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link></li>
+              <li><Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
+              <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Contact & Social */}
           <div>
             <h4 className="text-sm font-semibold mb-4">Get in Touch</h4>
             <div className="space-y-2 mb-4">
@@ -70,7 +46,7 @@ export function Footer() {
               >
                 {displayContact.email}
               </a>
-              <p className="text-sm text-muted-foreground">{displayContact.phone}</p>
+              <ClickToCall phone={displayContact.phone} size="sm" showIcon={false} />
             </div>
             <div className="flex gap-4">
               {displayContact.socialLinks?.linkedin && (
@@ -78,7 +54,7 @@ export function Footer() {
                   href={displayContact.socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-all hover:scale-110"
                   aria-label="LinkedIn"
                 >
                   <Linkedin size={20} />
@@ -89,7 +65,7 @@ export function Footer() {
                   href={displayContact.socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-all hover:scale-110"
                   aria-label="GitHub"
                 >
                   <Github size={20} />
