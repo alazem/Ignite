@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Linkedin, Github } from "lucide-react"
 import { getContactInfo } from "@/lib/content"
+import { ClickToCall } from "@/components/click-to-call"
 
 export function Footer() {
   const contact = getContactInfo()
@@ -70,7 +71,7 @@ export function Footer() {
               >
                 {displayContact.email}
               </a>
-              <p className="text-sm text-muted-foreground">{displayContact.phone}</p>
+              <ClickToCall phone={displayContact.phone} size="sm" showIcon={false} />
             </div>
             <div className="flex gap-4">
               {displayContact.socialLinks?.linkedin && (
@@ -78,7 +79,7 @@ export function Footer() {
                   href={displayContact.socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform duration-200"
                   aria-label="LinkedIn"
                 >
                   <Linkedin size={20} />
@@ -89,7 +90,7 @@ export function Footer() {
                   href={displayContact.socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform duration-200"
                   aria-label="GitHub"
                 >
                   <Github size={20} />

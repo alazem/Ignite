@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink } from "lucide-react"
 import { getProjects } from "@/lib/content"
+import { FadeIn, StaggerChildren } from "@/components/motion-wrapper"
 
 export default function ProjectsPage() {
   const projects = getProjects()
@@ -11,23 +12,23 @@ export default function ProjectsPage() {
     <div className="min-h-screen">
       {/* Header */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
+        <FadeIn className="max-w-7xl mx-auto">
           <p className="text-sm font-medium text-muted-foreground mb-2 tracking-wide uppercase">Portfolio</p>
           <h1 className="text-5xl sm:text-6xl font-bold tracking-tight mb-6">Our Work</h1>
           <p className="text-lg text-muted-foreground max-w-2xl text-pretty">
             A collection of projects that showcase our expertise in design, development, and digital strategy.
           </p>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Projects Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 gap-12" staggerDelay={0.12}>
             {projects.map((project, index) => (
               <Card
                 key={project.slug || index}
-                className="group overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500"
+                className="group overflow-hidden border-0 bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
               >
                 <div className="aspect-[16/10] relative overflow-hidden bg-muted">
                   <Image
@@ -66,7 +67,7 @@ export default function ProjectsPage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </StaggerChildren>
         </div>
       </section>
     </div>
