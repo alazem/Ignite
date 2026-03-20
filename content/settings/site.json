@@ -1,9 +1,25 @@
 {
   "stats": [
-    { "label": "Projects Completed", "value": "150+", "order": 1 },
-    { "label": "Happy Clients", "value": "80+", "order": 2 },
-    { "label": "Years Experience", "value": "12", "order": 3 },
-    { "label": "Team Members", "value": "25", "order": 4 }
+    {
+      "label": "Projects Completed",
+      "value": "5+",
+      "order": 1
+    },
+    {
+      "label": "Happy Clients",
+      "value": "1+",
+      "order": 2
+    },
+    {
+      "label": "Years Experience",
+      "value": "1",
+      "order": 3
+    },
+    {
+      "label": "Industries Served",
+      "value": "5+ Industries Covered",
+      "order": 4
+    }
   ],
   "contact": {
     "email": "ignitetechnologies3@gmail.com",
